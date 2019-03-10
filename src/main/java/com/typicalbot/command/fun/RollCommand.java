@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,18 @@ import java.util.stream.IntStream;
 
 @CommandConfiguration(category = CommandCategory.FUN, aliases = {"roll", "dice"})
 public class RollCommand implements Command {
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "roll [dice]d[sides]"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Roll some dice.";
+    }
+
     @Override
     public CommandPermission permission() {
         return CommandPermission.GUILD_MEMBER;

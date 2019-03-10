@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -104,6 +104,18 @@ public class ThisorthatCommand implements Command {
         "Ninjas or Pirates?",
         "TV Shows or Movies?"
     };
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "thisorthat"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Returns a this-or-that.";
+    }
 
     @Override
     public CommandPermission permission() {

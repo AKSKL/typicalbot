@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,13 @@
  */
 package com.typicalbot.shard;
 
+import com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats;
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.typicalbot.audio.GuildMusicManager;
 import com.typicalbot.command.CommandManager;
@@ -30,10 +32,8 @@ import com.typicalbot.command.core.HelpCommand;
 import com.typicalbot.command.core.InviteCommand;
 import com.typicalbot.command.core.PingCommand;
 import com.typicalbot.command.core.PrimeCommand;
-import com.typicalbot.command.core.ReportCommand;
 import com.typicalbot.command.core.ShardsCommand;
 import com.typicalbot.command.core.StatisticsCommand;
-import com.typicalbot.command.core.SuggestionCommand;
 import com.typicalbot.command.core.SupportCommand;
 import com.typicalbot.command.core.UptimeCommand;
 import com.typicalbot.command.core.VersionCommand;
@@ -47,20 +47,20 @@ import com.typicalbot.command.fun.EmojiCommand;
 import com.typicalbot.command.fun.EmojifyCommand;
 import com.typicalbot.command.fun.FacesCommand;
 import com.typicalbot.command.fun.FlipCommand;
-import com.typicalbot.command.fun.HugCommand;
+import com.typicalbot.command.interaction.HugCommand;
 import com.typicalbot.command.fun.JokeCommand;
 import com.typicalbot.command.fun.LmgtfyCommand;
 import com.typicalbot.command.fun.NatoCommand;
-import com.typicalbot.command.fun.PunchCommand;
+import com.typicalbot.command.interaction.PunchCommand;
 import com.typicalbot.command.fun.QuoteCommand;
 import com.typicalbot.command.fun.RandomCommand;
 import com.typicalbot.command.fun.ReverseCommand;
 import com.typicalbot.command.fun.RockpaperscissorsCommand;
 import com.typicalbot.command.fun.RollCommand;
 import com.typicalbot.command.fun.RomanCommand;
-import com.typicalbot.command.fun.ShootCommand;
-import com.typicalbot.command.fun.SlapCommand;
-import com.typicalbot.command.fun.StabCommand;
+import com.typicalbot.command.interaction.ShootCommand;
+import com.typicalbot.command.interaction.SlapCommand;
+import com.typicalbot.command.interaction.StabCommand;
 import com.typicalbot.command.fun.ThisorthatCommand;
 import com.typicalbot.command.fun.WouldyouratherCommand;
 import com.typicalbot.command.fun.YomammaCommand;
@@ -95,6 +95,10 @@ import com.typicalbot.command.moderation.UnbanCommand;
 import com.typicalbot.command.moderation.UndeafenCommand;
 import com.typicalbot.command.moderation.UnignoreCommand;
 import com.typicalbot.command.moderation.UnmuteCommand;
+import com.typicalbot.command.moderation.VoicekickCommand;
+import com.typicalbot.command.moderation.VoicemoveCommand;
+import com.typicalbot.command.moderation.VoicemuteCommand;
+import com.typicalbot.command.moderation.VoiceunmuteCommand;
 import com.typicalbot.command.moderation.WarnCommand;
 import com.typicalbot.command.music.CurrentCommand;
 import com.typicalbot.command.music.LyricsCommand;
@@ -107,6 +111,7 @@ import com.typicalbot.command.music.SeekCommand;
 import com.typicalbot.command.music.ShuffleCommand;
 import com.typicalbot.command.music.SkipCommand;
 import com.typicalbot.command.music.StopCommand;
+import com.typicalbot.command.music.TempoCommand;
 import com.typicalbot.command.music.UnqueueCommand;
 import com.typicalbot.command.music.VolumeCommand;
 import com.typicalbot.command.system.EvalCommand;
@@ -127,6 +132,7 @@ import com.typicalbot.command.utility.SubscribeCommand;
 import com.typicalbot.command.utility.UnsubscribeCommand;
 import com.typicalbot.command.utility.UserCommand;
 import com.typicalbot.command.webhook.WebhookCommand;
+import com.typicalbot.config.Config;
 import com.typicalbot.listener.GuildListener;
 import com.typicalbot.listener.ReadyListener;
 import net.dv8tion.jda.core.AccountType;
@@ -140,11 +146,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-/**
- * @author TypicalBot
- * @since 3.0.0-alpha
- */
 // TODO(nsylke): Documentation
 public class Shard {
     private static Shard singleton;
@@ -199,10 +202,8 @@ public class Shard {
                 new InviteCommand(),
                 new PingCommand(),
                 new PrimeCommand(),
-                new ReportCommand(),
                 new ShardsCommand(),
                 new StatisticsCommand(),
-                new SuggestionCommand(),
                 new SupportCommand(),
                 new UptimeCommand(),
                 new VersionCommand(),
@@ -218,20 +219,15 @@ public class Shard {
                 new EmojifyCommand(),
                 new FacesCommand(),
                 new FlipCommand(),
-                new HugCommand(),
                 new JokeCommand(),
                 new LmgtfyCommand(),
                 new NatoCommand(),
-                new PunchCommand(),
                 new QuoteCommand(),
                 new RandomCommand(),
                 new ReverseCommand(),
                 new RockpaperscissorsCommand(),
                 new RollCommand(),
                 new RomanCommand(),
-                new ShootCommand(),
-                new SlapCommand(),
-                new StabCommand(),
                 new ThisorthatCommand(),
                 new WouldyouratherCommand(),
                 new YomammaCommand(),
@@ -243,6 +239,13 @@ public class Shard {
                 new WeatherCommand(),
                 new WikipediaCommand(),
                 new XkcdCommand(),
+
+                // Interaction
+                new HugCommand(),
+                new PunchCommand(),
+                new ShootCommand(),
+                new SlapCommand(),
+                new StabCommand(),
 
                 // Miscellaneous
                 new SayCommand(),
@@ -272,6 +275,10 @@ public class Shard {
                 new UndeafenCommand(),
                 new UnignoreCommand(),
                 new UnmuteCommand(),
+                new VoicekickCommand(),
+                new VoicemoveCommand(),
+                new VoicemuteCommand(),
+                new VoiceunmuteCommand(),
                 new WarnCommand(),
 
                 // Music
@@ -286,6 +293,7 @@ public class Shard {
                 new ShuffleCommand(),
                 new SkipCommand(),
                 new StopCommand(),
+                new TempoCommand(),
                 new UnqueueCommand(),
                 new VolumeCommand(),
 
@@ -317,13 +325,17 @@ public class Shard {
             this.musicManager = new HashMap<>();
             this.playerManager = new DefaultAudioPlayerManager();
 
-            this.playerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.MEDIUM);
             this.playerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
+            this.playerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
+            this.playerManager.getConfiguration().setOutputFormat(StandardAudioDataFormats.DISCORD_OPUS);
 
             this.playerManager.registerSourceManager(new YoutubeAudioSourceManager());
+            this.playerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
 
             AudioSourceManagers.registerRemoteSources(this.playerManager);
             AudioSourceManagers.registerLocalSource(this.playerManager);
+
+            this.executorService.scheduleAtFixedRate(() -> this.instance.getPresence().setGame(Game.playing(Config.getConfig("discord").getString("prefix") + "help | " + ShardManager.getGuildCount() + " Guilds")), 30L, 60L, TimeUnit.SECONDS);
         } catch (LoginException e) {
             throw new RuntimeException(e);
         }

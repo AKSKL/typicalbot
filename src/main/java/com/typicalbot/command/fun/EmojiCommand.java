@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,18 @@ import java.util.regex.Pattern;
 public class EmojiCommand implements Command {
     // TODO(nsylke): Improve this and also move this to the configuration.
     private Pattern regex = Pattern.compile("(<)(:)((?:[a-z][a-z]+))(:)(\\d+)(>)");
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "emoji :thonk:"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Send an image of the emoji.";
+    }
 
     @Override
     public CommandPermission permission() {

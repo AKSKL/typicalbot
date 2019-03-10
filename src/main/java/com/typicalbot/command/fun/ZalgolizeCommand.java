@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,18 @@ import me.nsylke.zalgo4j.Zalgo4J;
 
 @CommandConfiguration(category = CommandCategory.FUN, aliases = {"zalgolize", "zalgo"})
 public class ZalgolizeCommand implements Command {
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "zalgo [text]"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Zalgolize some text.";
+    }
+
     @Override
     public CommandPermission permission() {
         return CommandPermission.GUILD_MEMBER;

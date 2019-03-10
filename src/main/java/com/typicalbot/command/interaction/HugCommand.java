@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.typicalbot.command.fun;
+package com.typicalbot.command.interaction;
 
 import com.typicalbot.command.Command;
 import com.typicalbot.command.CommandArgument;
@@ -25,8 +25,21 @@ import net.dv8tion.jda.core.entities.User;
 
 import java.util.Random;
 
-@CommandConfiguration(category = CommandCategory.FUN, aliases = "hug")
+@CommandConfiguration(category = CommandCategory.INTERACTION, aliases = "hug")
 public class HugCommand implements Command {
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "hug",
+            "hug [@user]"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Give yourself or another person a hug.";
+    }
+
     @Override
     public CommandPermission permission() {
         return CommandPermission.GUILD_MEMBER;

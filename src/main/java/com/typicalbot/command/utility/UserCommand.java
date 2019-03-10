@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,8 +64,11 @@ public class UserCommand implements Command {
 //            builder.addField("Playing", activities.get(0).getName(), true);
 //        }
 
-        if (context.getMessage().getGuild().getMember(target).getRoles().size() > 0) {
-            builder.addField("Roles", context.getMessage().getGuild().getMember(target).getRoles().stream().map(Role::getName).collect(Collectors.joining(", ")), true);
+        builder.addField("Discord Nitro", StringUtil.capitalize(Boolean.toString(target.getAvatarId().startsWith("a_"))), true);
+        builder.addField("TypicalBot Prime", "False", true);
+
+        if (!context.getMessage().getGuild().getMember(target).getRoles().isEmpty()) {
+            builder.addField("Roles", context.getMessage().getGuild().getMember(target).getRoles().stream().map(Role::getName).collect(Collectors.joining(", ")), false);
         }
 
         builder.setThumbnail(target.getEffectiveAvatarUrl());

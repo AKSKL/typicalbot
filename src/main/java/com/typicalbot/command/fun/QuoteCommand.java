@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -131,6 +131,18 @@ public class QuoteCommand implements Command {
         "The only way to do great work is to love what you do. - Steve Jobs",
         "If you can dream it, you can achieve it. - Zig Ziglar"
     };
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "quote"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Returns a quote.";
+    }
 
     @Override
     public CommandPermission permission() {

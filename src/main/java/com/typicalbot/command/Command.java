@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,6 @@
  */
 package com.typicalbot.command;
 
-/**
- * @author TypicalBot
- * @since 3.0.0-alpha
- */
 public interface Command {
     /**
      * The usage of the command, if none provided, it will say: "No usage available."
@@ -38,6 +34,13 @@ public interface Command {
     default String description() {
         return "No description available.";
     }
+
+    /**
+     * Determines whether or not if the command requires the channel to be in NSFW mode.
+     *
+     * @return command nsfw mode
+     */
+    default boolean nsfw() { return false; }
 
     /**
      * The permission required to use the command.

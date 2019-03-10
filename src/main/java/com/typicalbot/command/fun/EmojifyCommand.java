@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,6 +71,18 @@ public class EmojifyCommand implements Command {
         mapping.put('#', ":hash:");
         mapping.put('*', ":asterisk:");
         mapping.put(' ', " ");
+    }
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "emoji [text]"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Translate your sentence into emojis.";
     }
 
     @Override

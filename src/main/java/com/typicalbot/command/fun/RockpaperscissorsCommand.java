@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,18 @@ public class RockpaperscissorsCommand implements Command {
         "Paper",
         "Scissors"
     };
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "rockpaperscissors"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Plays rock-paper-scissors";
+    }
 
     @Override
     public CommandPermission permission() {

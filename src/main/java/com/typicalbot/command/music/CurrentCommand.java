@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,6 +36,12 @@ public class CurrentCommand implements Command {
     @Override
     public void execute(CommandContext context, CommandArgument argument) {
         GuildMusicManager musicManager = AudioUtil.getGuildAudioPlayer(context.getGuild());
+
+        if (musicManager.player.getPlayingTrack() == null) {
+            context.sendMessage("There is nothing playing.");
+            return;
+        }
+
         AudioTrack track = musicManager.player.getPlayingTrack();
 
         EmbedBuilder builder = new EmbedBuilder();

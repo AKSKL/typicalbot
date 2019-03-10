@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +42,18 @@ public class RomanCommand implements Command {
         mapping.put(5, "V");
         mapping.put(4, "IV");
         mapping.put(1, "I");
+    }
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "romain [number]"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Get the roman numerals for a number.";
     }
 
     @Override

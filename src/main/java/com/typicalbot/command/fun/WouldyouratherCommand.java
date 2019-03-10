@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -236,6 +236,18 @@ public class WouldyouratherCommand implements Command {
         "Would you rather die if you didn’t slap a new person on the butt every 12 hours or die if you didn’t kill someone every year?",
         "Would you rather spend two years with your soul mate only to have them die and you never love again or spend your life with someone nice you settled for?"
     };
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "wouldyourather"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Returns a would-you-rather.";
+    }
 
     @Override
     public CommandPermission permission() {

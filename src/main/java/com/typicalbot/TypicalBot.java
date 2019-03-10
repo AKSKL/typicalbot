@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 package com.typicalbot;
 
 import com.typicalbot.config.Config;
+import com.typicalbot.data.mongo.MongoManager;
 import com.typicalbot.data.serialization.Deserializer;
 import com.typicalbot.data.serialization.Serializer;
 import com.typicalbot.data.storage.DataStructure;
@@ -23,9 +24,13 @@ import com.typicalbot.shard.Shard;
 import com.typicalbot.shard.ShardManager;
 import com.typicalbot.util.FileUtil;
 import com.typicalbot.util.console.ConsoleReader;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,16 +38,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 
-/**
- * @author TypicalBot
- * @since 3.0.0-alpha
- */
 public class TypicalBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(TypicalBot.class);
 
+    private static MongoManager mongoManager;
+
     public static final String VERSION = "@version@";
 
-    public TypicalBot() throws IOException, InterruptedException {
+    public TypicalBot() throws IOException, InterruptedException, LoginException {
         LOGGER.info("  _____                   _                  _   ____            _   ");
         LOGGER.info(" |_   _|  _   _   _ __   (_)   ___    __ _  | | | __ )    ___   | |_ ");
         LOGGER.info("   | |   | | | | | '_ \\  | |  / __|  / _` | | | |  _ \\   / _ \\  | __|");
@@ -63,7 +66,8 @@ public class TypicalBot {
                 try {
                     Files.createDirectory(FileUtil.HOME_PATH.resolve(directory));
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    LOGGER.error("Unable to create directory, exiting...", e);
+                    System.exit(0);
                 }
             }
         });
@@ -83,10 +87,12 @@ public class TypicalBot {
 
             LOGGER.info("Please wait while we retrieve the client identifier.");
 
-            Shard shard = new Shard(token);
-            Thread.sleep(5000); // TODO(nsylke): Find the lowest millisecond we need to wait.
-            String clientId = shard.getClientId();
-            shard.shutdown();
+            // Temp solution
+            JDA jda = new JDABuilder(AccountType.BOT).setToken(token).build();
+            jda.awaitReady();
+
+            String clientId = jda.getSelfUser().getId();
+            jda.shutdown();
 
             if (clientId == null) {
                 LOGGER.error("The token entered is invalid, please restart the application.");
@@ -116,15 +122,26 @@ public class TypicalBot {
          */
         Arrays.asList(deserializer.deserialize(new FileInputStream(new File(FileUtil.HOME_PATH.resolve("bin/discord.dat").toString()))).toString().split(":")).forEach(data::insert);
         Config.init();
+        mongoManager = new MongoManager();
 
-        ShardManager.register(String.valueOf(data.read(0)), String.valueOf(data.read(0)), Config.getConfig("discord").getInt("shards"));
+        Object shards = Config.getConfig("discord").get("shards");
+
+        if (shards instanceof String && shards.equals("auto")) {
+            ShardManager.register(String.valueOf(data.read(0)), String.valueOf(data.read(1)), ShardManager.getRecommendedShards(String.valueOf(data.read(0))));
+        } else {
+            ShardManager.register(String.valueOf(data.read(0)), String.valueOf(data.read(1)), (int) shards);
+        }
     }
 
     public static void main(String[] args) {
         try {
             new TypicalBot();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | LoginException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static MongoManager getMongoManager() {
+        return mongoManager;
     }
 }

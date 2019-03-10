@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,6 +67,18 @@ public class NatoCommand implements Command {
         mapping.put('9', "Nine");
         mapping.put('0', "Zero");
         mapping.put(' ', "");
+    }
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "nato [text]"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Translate text into the nato alphabet.";
     }
 
     @Override

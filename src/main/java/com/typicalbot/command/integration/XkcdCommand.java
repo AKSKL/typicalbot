@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,23 @@ import com.typicalbot.command.CommandCategory;
 import com.typicalbot.command.CommandConfiguration;
 import com.typicalbot.command.CommandContext;
 import com.typicalbot.command.CommandPermission;
+import net.dv8tion.jda.core.EmbedBuilder;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.IOException;
+import java.util.Random;
 
 @CommandConfiguration(category = CommandCategory.INTEGRATION, aliases = "xkcd")
 public class XkcdCommand implements Command {
+    @Override
+    public boolean nsfw() {
+        return true;
+    }
+
     @Override
     public CommandPermission permission() {
         return CommandPermission.GUILD_MEMBER;
@@ -31,6 +45,39 @@ public class XkcdCommand implements Command {
 
     @Override
     public void execute(CommandContext context, CommandArgument argument) {
-        throw new UnsupportedOperationException("This command has not been implemented yet.");
+        int num;
+
+        if (argument.has()) {
+            int temp = Integer.parseInt(argument.get(0));
+
+            if (temp > 2115 || temp < 1) {
+                context.sendMessage("Invalid comic number.");
+                return;
+            }
+
+            num = temp;
+        } else {
+            num = new Random().nextInt(2115);
+        }
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url("https://xkcd.com/" + num + "/info.0.json").build();
+
+        try {
+            Response response = client.newCall(request).execute();
+
+            JSONObject object = new JSONObject(new JSONTokener(response.body().byteStream()));
+
+            EmbedBuilder builder = new EmbedBuilder();
+
+            builder.setTitle(object.getString("title"));
+            builder.setDescription(object.getString("alt"));
+            builder.setImage(object.getString("img"));
+            builder.setColor(CommandContext.TYPICALBOT_SUCCESS);
+
+            context.sendEmbed(builder.build());
+        } catch (IOException ex) {
+            context.sendMessage("Unable to retrieve XKCD comic.");
+        }
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,10 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * @author TypicalBot
- * @since 3.0.0-alpha
- */
 public class ShardManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShardManager.class);
 
@@ -161,5 +157,9 @@ public class ShardManager {
      */
     public static double getAveragePing() {
         return Arrays.stream(shards).mapToLong(Shard::getPing).filter(ping -> ping != -1).average().orElse(-1D);
+    }
+
+    public static int getGuildCount() {
+        return Arrays.stream(shards).mapToInt(Shard::getGuilds).sum();
     }
 }

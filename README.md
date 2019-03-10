@@ -8,6 +8,7 @@ TypicalBot
 [![Apache 2.0 License](https://img.shields.io/github/license/typicalbot/typicalbot.svg)](LICENSE.md)
 [![CLA](https://cla-assistant.io/readme/badge/typicalbot/typicalbot)](https://cla-assistant.io/typicalbot/typicalbot)
 [![SNYK](https://snyk.io/test/github/typicalbot/typicalbot/badge.svg)](https://snyk.io/test/github/typicalbot/typicalbot)
+[![Crowdin](https://d322cqt584bo4o.cloudfront.net/typicalbot/localized.svg)](https://crowdin.typicalbot.com/project/typicalbot)
 
 TypicalBot is open-source discord bot written in Java, using the [JDA library](https://github.com/DV8FromTheWorld/JDA).
 
@@ -46,8 +47,8 @@ Our project roadmap can be found [here](https://typicalbot.com/roadmap).
 
 ## Maintainers
 
-- Nicholas Sylke ([@nsylke](https://nsylke.me))
-- Bryan Pikaard ([@HyperCoder2975](https://pikaard.com))
+- Nicholas Sylke ([@nsylke](https://github.com/nsylke))
+- Bryan Pikaard ([@HyperCoder2975](https://github.com/hypercoder2975))
 
 ## License
 
@@ -58,3 +59,15 @@ Like many other open source projects, we require that contributors provide us wi
 Our version of the CLA was adapted from the Microsoft Contributor License Agreement, which they generously made available to the public domain under Creative Commons CC0 1.0 Universal.
 
 For any inquiries, please email support@typicalbot.com
+
+---
+
+Thanks to Crowdin, JetBrains and YourKit for sponsoring our project with Open Source licenses.
+
+ - Crowdin is a localization management platform that helps companies to translate their software.
+ - JetBrains is a cutting-edge software vendor specializing in the creation of intelligent development tools, including IntelliJ IDEA – the leading Java IDE, and the Kotlin programming language.
+ - YourKit supports open source projects with innovative and intelligent tools for monitoring and profiling Java and .NET applications. YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler), [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler), and [YourKit YouMonitor](https://www.yourkit.com/youmonitor).
+ 
+[![Crowdin](https://i.imgur.com/iak92W6.png)](https://crowdin.com)
+[![JetBrains](https://i.imgur.com/3iN9EeA.png)](https://www.jetbrains.com/?from=typicalbot)
+[![YourKit](https://i.imgur.com/GdygJ1w.png)](https://www.yourkit.com)

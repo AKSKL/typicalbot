@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +23,20 @@ import com.typicalbot.command.CommandContext;
 import com.typicalbot.command.CommandPermission;
 import net.dv8tion.jda.core.EmbedBuilder;
 
-@CommandConfiguration(category = CommandCategory.CORE, aliases = "invite")
+@CommandConfiguration(category = CommandCategory.CORE, aliases = {"invite", "oauth"})
 public class InviteCommand implements Command {
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "invite"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Receive the OAuth2 authorization link for TypicalBot.";
+    }
+
     @Override
     public CommandPermission permission() {
         return CommandPermission.GUILD_MEMBER;
@@ -35,7 +47,8 @@ public class InviteCommand implements Command {
         EmbedBuilder builder = new EmbedBuilder();
 
         builder.setTitle("TypicalBot Invite");
-        builder.setDescription("You can add me to your server [here](https://typicalbot.com/invite).");
+        builder.setDescription("[Click here](https://typicalbot.com/invite) to invite TypicalBot to your guild.");
+        builder.setColor(CommandContext.TYPICALBOT_BLUE);
 
         context.sendEmbed(builder.build());
     }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,12 @@ public class SkipCommand implements Command {
 
     private void skipTrack(TextChannel channel) {
         GuildMusicManager musicManager = AudioUtil.getGuildAudioPlayer(channel.getGuild());
+
+        if (musicManager.player.getPlayingTrack() == null) {
+            channel.sendMessage("There is nothing playing.").queue();
+            return;
+        }
+
         musicManager.scheduler.nextTrack();
 
         channel.sendMessage("Skipped to next track.").queue();

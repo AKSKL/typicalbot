@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,6 +55,7 @@ public class CommandsCommand implements Command {
         EmbedBuilder builder = new EmbedBuilder();
 
         builder.setTitle("TypicalBot Commands");
+        builder.setColor(CommandContext.TYPICALBOT_BLUE);
 
         for (CommandCategory category : CommandCategory.values()) {
             if (category != CommandCategory.SYSTEM) {

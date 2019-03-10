@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -170,6 +170,18 @@ public class JokeCommand implements Command {
         "How do you feel like when there is no coffee? -- Depresso!",
         "Why was the Egyptian boy confused? -- His daddy was really a mummy."
     };
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "joke"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Returns a joke.";
+    }
 
     @Override
     public CommandPermission permission() {

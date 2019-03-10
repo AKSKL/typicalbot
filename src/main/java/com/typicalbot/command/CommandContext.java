@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,11 +27,11 @@ import net.dv8tion.jda.core.entities.User;
 import java.text.MessageFormat;
 import java.util.List;
 
-/**
- * @author TypicalBot
- * @since 3.0.0-alpha
- */
 public class CommandContext {
+    public static final int TYPICALBOT_BLUE = 0x1976D2;
+    public static final int TYPICALBOT_SUCCESS = 0x00FF00;
+    public static final int TYPICALBOT_ERROR = 0xFF0000;
+
     private final Message message;
 
     public CommandContext(Message message) {
@@ -48,6 +48,22 @@ public class CommandContext {
 
     public MessageChannel getChannel() {
         return this.message.getChannel();
+    }
+
+    public User getAuthor() {
+        return this.message.getAuthor();
+    }
+
+    public Member getMember() {
+        return this.message.getMember();
+    }
+
+    public User getSelfUser() {
+        return this.message.getJDA().getSelfUser();
+    }
+
+    public Member getSelfMember() {
+        return this.message.getGuild().getSelfMember();
     }
 
     public void sendMessage(String message, Object... params) {

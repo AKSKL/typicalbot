@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -1007,6 +1007,18 @@ public class YomammaCommand implements Command {
         "Yo mama's like a puppy... everybody wants to give her a hug.",
         "Yo mama's so smart that an employee from Wikipedia calls her when they need to verify facts about 18th century political figures."
     };
+
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "yomamma"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Returns a yomamma joke.";
+    }
 
     @Override
     public CommandPermission permission() {

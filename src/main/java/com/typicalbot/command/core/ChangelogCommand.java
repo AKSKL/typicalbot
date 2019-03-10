@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2019 Bryan Pikaard & Nicholas Sylke
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,20 +21,27 @@ import com.typicalbot.command.CommandCategory;
 import com.typicalbot.command.CommandConfiguration;
 import com.typicalbot.command.CommandContext;
 import com.typicalbot.command.CommandPermission;
+import net.dv8tion.jda.core.EmbedBuilder;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 @CommandConfiguration(category = CommandCategory.CORE, aliases = "changelog")
 public class ChangelogCommand implements Command {
     @Override
     public String[] usage() {
         return new String[]{
-            "changelog",
-            "changelog [version]"
+            "changelog"
         };
     }
 
     @Override
     public String description() {
-        return "Get the changelog for the current version, or previous version.";
+        return "See the changelog for the current version of TypicalBot.";
     }
 
     @Override
@@ -44,7 +51,24 @@ public class ChangelogCommand implements Command {
 
     @Override
     public void execute(CommandContext context, CommandArgument argument) {
-        // TODO(nsylke): Won't be added till we are ready release TypicalBot v3
-        throw new UnsupportedOperationException("This command has not been implemented yet.");
+        OkHttpClient client = new OkHttpClient();
+
+        // https://developer.github.com/v3/repos/releases/#get-the-latest-release
+        Request request = new Request.Builder().url("https://api.github.com/repos/typicalbot/typicalbot/releases/latest").build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            JSONObject object = new JSONObject(response.body().string());
+
+            EmbedBuilder builder = new EmbedBuilder();
+
+            builder.setTitle("TypicalBot Changelog", object.getString("html_url"));
+            builder.setDescription(object.getString("body"));
+            builder.setColor(CommandContext.TYPICALBOT_BLUE);
+
+            context.sendEmbed(builder.build());
+        } catch (IOException | JSONException ex) {
+            context.sendMessage("Unable to retrieve changelog from GitHub.");
+        }
     }
 }
