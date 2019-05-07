@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  */
 package com.typicalbot.command;
 
+import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -66,6 +67,10 @@ public class CommandContext {
         return this.message.getGuild().getSelfMember();
     }
 
+    public JDA getJDA() {
+        return this.message.getJDA();
+    }
+
     public void sendMessage(String message, Object... params) {
         this.getChannel().sendMessage(MessageFormat.format(message, params)).queue();
     }
@@ -80,12 +85,12 @@ public class CommandContext {
         }
 
         Member member = this.getGuild().getMembers().stream()
-                .filter(m -> m.getUser().getName().equalsIgnoreCase(user))
+            .filter(m -> m.getUser().getName().equalsIgnoreCase(user))
+            .findFirst()
+            .orElse(this.getGuild().getMembers().stream()
+                .filter(m -> m.getUser().getId().equalsIgnoreCase(user))
                 .findFirst()
-                .orElse(this.getGuild().getMembers().stream()
-                        .filter(m -> m.getUser().getId().equalsIgnoreCase(user))
-                        .findFirst()
-                        .orElse(null));
+                .orElse(null));
 
         return (member != null) ? member.getUser() : null;
     }
@@ -96,12 +101,12 @@ public class CommandContext {
         }
 
         return this.getGuild().getChannels().stream()
-                .filter(ch -> ch.getName().equalsIgnoreCase(channel))
+            .filter(ch -> ch.getName().equalsIgnoreCase(channel))
+            .findFirst()
+            .orElse(this.getGuild().getChannels().stream()
+                .filter(ch -> ch.getId().equalsIgnoreCase(channel))
                 .findFirst()
-                .orElse(this.getGuild().getChannels().stream()
-                        .filter(ch -> ch.getId().equalsIgnoreCase(channel))
-                        .findFirst()
-                        .orElse(null));
+                .orElse(null));
     }
 
     public Role getRole(String role) {

@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,6 +19,7 @@ package com.typicalbot.command.moderation;
 import com.typicalbot.command.Command;
 import com.typicalbot.command.CommandArgument;
 import com.typicalbot.command.CommandCategory;
+import com.typicalbot.command.CommandCheck;
 import com.typicalbot.command.CommandConfiguration;
 import com.typicalbot.command.CommandContext;
 import com.typicalbot.command.CommandPermission;
@@ -36,20 +37,9 @@ public class VoicemoveCommand implements Command {
 
     @Override
     public void execute(CommandContext context, CommandArgument argument) {
-        if (!context.getMember().hasPermission(Permission.VOICE_MOVE_OTHERS)) {
-            context.sendMessage("You do not have permission to move members.");
-            return;
-        }
-
-        if (!context.getSelfMember().hasPermission(Permission.VOICE_MOVE_OTHERS)) {
-            context.sendMessage("TypicalBot does not have permission to move members.");
-            return;
-        }
-
-        if (!argument.has()) {
-            context.sendMessage("Incorrect usage. Please check `$help voicemove` for usage.");
-            return;
-        }
+        CommandCheck.checkPermission(context.getMember(), Permission.VOICE_MOVE_OTHERS);
+        CommandCheck.checkPermission(context.getSelfMember(), Permission.VOICE_MOVE_OTHERS);
+        CommandCheck.checkArguments(argument);
 
         User temp = context.getUser(argument.get(0));
         if (temp == null) {

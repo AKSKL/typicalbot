@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,6 +37,7 @@ import com.typicalbot.command.core.StatisticsCommand;
 import com.typicalbot.command.core.SupportCommand;
 import com.typicalbot.command.core.UptimeCommand;
 import com.typicalbot.command.core.VersionCommand;
+import com.typicalbot.command.core.VoteCommand;
 import com.typicalbot.command.fun.BunnyCommand;
 import com.typicalbot.command.fun.CatCommand;
 import com.typicalbot.command.fun.ChooseCommand;
@@ -47,20 +48,15 @@ import com.typicalbot.command.fun.EmojiCommand;
 import com.typicalbot.command.fun.EmojifyCommand;
 import com.typicalbot.command.fun.FacesCommand;
 import com.typicalbot.command.fun.FlipCommand;
-import com.typicalbot.command.interaction.HugCommand;
 import com.typicalbot.command.fun.JokeCommand;
 import com.typicalbot.command.fun.LmgtfyCommand;
 import com.typicalbot.command.fun.NatoCommand;
-import com.typicalbot.command.interaction.PunchCommand;
 import com.typicalbot.command.fun.QuoteCommand;
 import com.typicalbot.command.fun.RandomCommand;
 import com.typicalbot.command.fun.ReverseCommand;
 import com.typicalbot.command.fun.RockpaperscissorsCommand;
 import com.typicalbot.command.fun.RollCommand;
 import com.typicalbot.command.fun.RomanCommand;
-import com.typicalbot.command.interaction.ShootCommand;
-import com.typicalbot.command.interaction.SlapCommand;
-import com.typicalbot.command.interaction.StabCommand;
 import com.typicalbot.command.fun.ThisorthatCommand;
 import com.typicalbot.command.fun.WouldyouratherCommand;
 import com.typicalbot.command.fun.YomammaCommand;
@@ -70,6 +66,11 @@ import com.typicalbot.command.integration.UrbandictionaryCommand;
 import com.typicalbot.command.integration.WeatherCommand;
 import com.typicalbot.command.integration.WikipediaCommand;
 import com.typicalbot.command.integration.XkcdCommand;
+import com.typicalbot.command.interaction.HugCommand;
+import com.typicalbot.command.interaction.PunchCommand;
+import com.typicalbot.command.interaction.ShootCommand;
+import com.typicalbot.command.interaction.SlapCommand;
+import com.typicalbot.command.interaction.StabCommand;
 import com.typicalbot.command.miscellaneous.SayCommand;
 import com.typicalbot.command.moderation.AdcheckCommand;
 import com.typicalbot.command.moderation.AliasCommand;
@@ -140,8 +141,10 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -175,7 +178,7 @@ public class Shard {
         this.shardTotal = shardTotal;
 
         try {
-            this.instance = new JDABuilder(AccountType.BOT)
+            JDABuilder builder = new JDABuilder(AccountType.BOT)
                 .setToken(token)
                 .setAutoReconnect(true)
                 .setAudioEnabled(true)
@@ -183,15 +186,21 @@ public class Shard {
                 .setStatus(OnlineStatus.IDLE) // Set to IDLE while still loading, change ONLINE when ready
                 .setBulkDeleteSplittingEnabled(true)
                 .setEnableShutdownHook(true)
-                .setAudioSendFactory(new NativeAudioSendFactory())
+                .setContextEnabled(true)
+                .setDisabledCacheFlags(EnumSet.of(CacheFlag.GAME))
                 .useSharding(shardId, shardTotal)
-                .setCorePoolSize(4)
-                .build();
+                .setCorePoolSize(4);
 
-            this.instance.addEventListener(
+            if (!System.getProperty("os.arch").equalsIgnoreCase("arm") && !System.getProperty("os.arch").equalsIgnoreCase("arm-linux")) {
+                builder.setAudioSendFactory(new NativeAudioSendFactory());
+            }
+
+            builder.addEventListener(
                 new ReadyListener(),
                 new GuildListener()
             );
+
+            this.instance = builder.build();
 
             this.commandManager.registerCommands(
                 // Core
@@ -207,6 +216,7 @@ public class Shard {
                 new SupportCommand(),
                 new UptimeCommand(),
                 new VersionCommand(),
+                new VoteCommand(),
 
                 // Fun
                 new BunnyCommand(),
@@ -394,6 +404,10 @@ public class Shard {
         return this.instance.getGuilds().size();
     }
 
+    public int getChannels() {
+        return this.instance.getTextChannels().size() + this.instance.getCategories().size() + this.instance.getVoiceChannels().size();
+    }
+
     /**
      * Get the current amount of users on this shard.
      *
@@ -401,6 +415,10 @@ public class Shard {
      */
     public int getUsers() {
         return this.instance.getUsers().size();
+    }
+
+    public int getVoiceConnections() {
+        return (int) this.instance.getVoiceChannels().stream().filter(v -> v.getMembers().contains(v.getGuild().getSelfMember())).count();
     }
 
     /**

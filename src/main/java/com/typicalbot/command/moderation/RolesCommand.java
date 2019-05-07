@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,6 +24,21 @@ import com.typicalbot.command.CommandPermission;
 
 @CommandConfiguration(category = CommandCategory.MODERATION, aliases = "roles")
 public class RolesCommand implements Command {
+    public String[] usage() {
+        return new String[]{
+            "roles create [name]",
+            "roles delete [name]",
+            "roles clone [role] [name]",
+            "roles give [user] [role]",
+            "roles take [user] [role]"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Manage or view roles in a server.";
+    }
+
     @Override
     public CommandPermission permission() {
         return CommandPermission.GUILD_ADMINISTRATOR;

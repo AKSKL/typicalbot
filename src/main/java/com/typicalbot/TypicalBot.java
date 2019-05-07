@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,9 +20,9 @@ import com.typicalbot.data.mongo.MongoManager;
 import com.typicalbot.data.serialization.Deserializer;
 import com.typicalbot.data.serialization.Serializer;
 import com.typicalbot.data.storage.DataStructure;
-import com.typicalbot.shard.Shard;
 import com.typicalbot.shard.ShardManager;
 import com.typicalbot.util.FileUtil;
+import com.typicalbot.util.SentryUtil;
 import com.typicalbot.util.console.ConsoleReader;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -56,7 +56,9 @@ public class TypicalBot {
         LOGGER.info("");
 
         LOGGER.info("TypicalBot created by Bryan Pikaard and Nicholas Sylke.");
-        LOGGER.info("TypicalBot is licensed under the Apache 2.0 license.");
+        LOGGER.info("Copyright (c) 2019 Bryan Pikaard, Nicholas Sylke, and contributors.");
+        LOGGER.info("TypicalBot is licensed under the Apache License, Version 2.0 (\"License\").");
+        LOGGER.info("You may obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.");
 
         LOGGER.info("");
 
@@ -72,7 +74,7 @@ public class TypicalBot {
             }
         });
 
-        Arrays.asList("app", "database", "discord", "filter", "sentry").forEach(file -> {
+        Arrays.asList("app", "database", "discord", "filter").forEach(file -> {
             if (!Files.exists(FileUtil.HOME_PATH.resolve("config/" + file + ".yml"))) {
                 LOGGER.debug("File '{}' does not exist, creating...", file);
                 FileUtil.copy(FileUtil.HOME_PATH.resolve("config/" + file + ".yml"), "/config/" + file + ".yml");
@@ -137,7 +139,7 @@ public class TypicalBot {
         try {
             new TypicalBot();
         } catch (IOException | LoginException | InterruptedException e) {
-            e.printStackTrace();
+            SentryUtil.capture(e, TypicalBot.class);
         }
     }
 

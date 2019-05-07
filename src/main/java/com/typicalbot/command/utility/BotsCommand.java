@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,13 +18,15 @@ package com.typicalbot.command.utility;
 import com.typicalbot.command.Command;
 import com.typicalbot.command.CommandArgument;
 import com.typicalbot.command.CommandCategory;
+import com.typicalbot.command.CommandCheck;
 import com.typicalbot.command.CommandConfiguration;
 import com.typicalbot.command.CommandContext;
 import com.typicalbot.command.CommandPermission;
+import com.typicalbot.util.Pageable;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Request.Builder;
 import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,6 +47,8 @@ public class BotsCommand implements Command {
 
     @Override
     public void execute(CommandContext context, CommandArgument argument) {
+        CommandCheck.checkPermission(context.getSelfMember(), Permission.MESSAGE_EMBED_LINKS);
+
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url("https://www.carbonitex.net/discord/api/listedbots").build();
 
@@ -63,7 +67,7 @@ public class BotsCommand implements Command {
             servers.sort(Comparator.comparingInt(o -> o.getInt("servercount")));
             Collections.reverse(servers);
 
-            ServersCommand.Pageable<JSONObject> obj = new ServersCommand.Pageable<>(servers);
+            Pageable<JSONObject> obj = new Pageable<>(servers);
 
             if (argument.has()) {
                 obj.setPage(Integer.parseInt(argument.get(0)));

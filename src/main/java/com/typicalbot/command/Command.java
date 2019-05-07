@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,6 @@ package com.typicalbot.command;
 public interface Command {
     /**
      * The usage of the command, if none provided, it will say: "No usage available."
-     *
      *
      * @return command usage
      */
@@ -40,7 +39,9 @@ public interface Command {
      *
      * @return command nsfw mode
      */
-    default boolean nsfw() { return false; }
+    default boolean nsfw() {
+        return false;
+    }
 
     /**
      * The permission required to use the command.
@@ -52,7 +53,7 @@ public interface Command {
     /**
      * The execution of the command.
      *
-     * @param context the command context
+     * @param context  the command context
      * @param argument the command arguments
      */
     void execute(CommandContext context, CommandArgument argument);

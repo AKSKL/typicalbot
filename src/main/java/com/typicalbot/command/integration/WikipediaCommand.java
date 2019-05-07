@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,10 +18,12 @@ package com.typicalbot.command.integration;
 import com.typicalbot.command.Command;
 import com.typicalbot.command.CommandArgument;
 import com.typicalbot.command.CommandCategory;
+import com.typicalbot.command.CommandCheck;
 import com.typicalbot.command.CommandConfiguration;
 import com.typicalbot.command.CommandContext;
 import com.typicalbot.command.CommandPermission;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -33,16 +35,26 @@ import java.io.IOException;
 @CommandConfiguration(category = CommandCategory.INTEGRATION, aliases = "wikipedia")
 public class WikipediaCommand implements Command {
     @Override
+    public String[] usage() {
+        return new String[]{
+            "wikipedia [term]"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Look up a term on Wikipedia.";
+    }
+
+    @Override
     public CommandPermission permission() {
         return CommandPermission.GUILD_MEMBER;
     }
 
     @Override
     public void execute(CommandContext context, CommandArgument argument) {
-        if (!argument.has()) {
-            context.sendMessage("Incorrect usage.");
-            return;
-        }
+        CommandCheck.checkPermission(context.getSelfMember(), Permission.MESSAGE_EMBED_LINKS);
+        CommandCheck.checkArguments(argument);
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url("https://wikipedia.org/w/api.php?format=json&action=query&prop=extracts&redirects=1&exintro=&explaintext=&titles=" + argument.toString()).build();

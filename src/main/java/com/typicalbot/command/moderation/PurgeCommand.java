@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,18 +18,31 @@ package com.typicalbot.command.moderation;
 import com.typicalbot.command.Command;
 import com.typicalbot.command.CommandArgument;
 import com.typicalbot.command.CommandCategory;
+import com.typicalbot.command.CommandCheck;
 import com.typicalbot.command.CommandConfiguration;
 import com.typicalbot.command.CommandContext;
 import com.typicalbot.command.CommandPermission;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.MessageHistory;
-import net.dv8tion.jda.core.entities.User;
 
 import java.util.concurrent.TimeUnit;
 
 @CommandConfiguration(category = CommandCategory.MODERATION, aliases = "purge")
 public class PurgeCommand implements Command {
+    @Override
+    public String[] usage() {
+        return new String[]{
+            "purge [count]",
+            "purge all"
+        };
+    }
+
+    @Override
+    public String description() {
+        return "Purge messages in a channel.";
+    }
+
     @Override
     public CommandPermission permission() {
         return CommandPermission.GUILD_MODERATOR;
@@ -37,20 +50,9 @@ public class PurgeCommand implements Command {
 
     @Override
     public void execute(CommandContext context, CommandArgument argument) {
-        if (!context.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            context.sendMessage("You do not have permission to manage messages.");
-            return;
-        }
-
-        if (!context.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-            context.sendMessage("TypicalBot does not have permission to manage messages.");
-            return;
-        }
-
-        if (!argument.has()) {
-            context.sendMessage("Incorrect usage. Please check `$help purge` for usage.");
-            return;
-        }
+        CommandCheck.checkPermission(context.getMember(), Permission.MESSAGE_MANAGE);
+        CommandCheck.checkPermission(context.getSelfMember(), Permission.MESSAGE_MANAGE);
+        CommandCheck.checkArguments(argument);
 
         if (argument.get(0).equalsIgnoreCase("all")) {
             context.getGuild().getController().createCopyOfChannel(context.getMessage().getTextChannel()).queue(

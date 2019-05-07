@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,6 +44,12 @@ public class GuildSettingObject {
     @Property("nickname")
     private boolean nickname;
 
+    @Property("dmCommand")
+    private boolean dmCommand;
+
+    @Property("commandSimilarity")
+    private boolean commandSimilarity;
+
     @Embedded
     private GuildFilterSettingObject filters;
 
@@ -60,6 +66,8 @@ public class GuildSettingObject {
     private GuildRoleSettingObject roles;
 
     public GuildSettingObject() {
+        this.dmCommand = true;
+        this.commandSimilarity = false;
         this.filters = new GuildFilterSettingObject();
         this.logs = new GuildLogSettingObject();
         this.modules = new GuildModuleSettingObject();
@@ -129,6 +137,22 @@ public class GuildSettingObject {
 
     public void setNickname(boolean nickname) {
         this.nickname = nickname;
+    }
+
+    public boolean isDmCommand() {
+        return dmCommand;
+    }
+
+    public void setDmCommand(boolean dmCommand) {
+        this.dmCommand = dmCommand;
+    }
+
+    public boolean isCommandSimilarity() {
+        return commandSimilarity;
+    }
+
+    public void setCommandSimilarity(boolean commandSimilarity) {
+        this.commandSimilarity = commandSimilarity;
     }
 
     public GuildFilterSettingObject getFilters() {

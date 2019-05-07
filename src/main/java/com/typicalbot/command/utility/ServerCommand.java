@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,6 +18,7 @@ package com.typicalbot.command.utility;
 import com.typicalbot.command.Command;
 import com.typicalbot.command.CommandArgument;
 import com.typicalbot.command.CommandCategory;
+import com.typicalbot.command.CommandCheck;
 import com.typicalbot.command.CommandConfiguration;
 import com.typicalbot.command.CommandContext;
 import com.typicalbot.command.CommandPermission;
@@ -38,6 +39,8 @@ public class ServerCommand implements Command {
 
     @Override
     public void execute(CommandContext context, CommandArgument argument) {
+        CommandCheck.checkPermission(context.getSelfMember(), Permission.MESSAGE_EMBED_LINKS);
+
         EmbedBuilder builder = new EmbedBuilder();
 
         Guild guild = context.getGuild();
@@ -64,7 +67,7 @@ public class ServerCommand implements Command {
             long dndCount = guild.getMemberCache().stream().filter(m -> m.getOnlineStatus() == OnlineStatus.DO_NOT_DISTURB).count();
             long invisibleCount = guild.getMemberCache().stream().filter(m -> m.getOnlineStatus() == OnlineStatus.OFFLINE).count();
 
-            builder.addField("Members", String.format("%s %d%n%s %d%n%s %d%n%s %d", online, onlineCount, idle, idleCount, dnd, dndCount, invisible, invisibleCount), true);
+            builder.addField("Members", String.format("%s%d %s%d%n%s%d %s%d", online, onlineCount, idle, idleCount, dnd, dndCount, invisible, invisibleCount), true);
         } else {
             builder.addField("Members", Integer.toString(guild.getMembers().size()), true);
         }

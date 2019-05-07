@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Bryan Pikaard & Nicholas Sylke
+ * Copyright 2019 Bryan Pikaard, Nicholas Sylke and the TypicalBot contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@
 package com.typicalbot.shard;
 
 import com.google.common.primitives.Ints;
+import com.typicalbot.metric.MetricPoster;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -49,8 +50,8 @@ public class ShardManager {
      * Generate shards to run the Discord bot. Bots are limited to 2500
      * servers per shard.
      *
-     * @param token the token of the Discord bot.
-     * @param clientId the client identifier of the Discord bot.
+     * @param token      the token of the Discord bot.
+     * @param clientId   the client identifier of the Discord bot.
      * @param shardTotal the maximum shards to generate.
      * @throws InterruptedException if the thread is interrupted.
      */
@@ -67,6 +68,8 @@ public class ShardManager {
             // Clients are limited to one identify every 5 seconds.
             Thread.sleep(5000);
         }
+
+        new MetricPoster().start();
     }
 
     /**
@@ -104,9 +107,9 @@ public class ShardManager {
     /**
      * Restart a specify shard.
      *
-     * @param token The token of the bot
+     * @param token    The token of the bot
      * @param clientId The client identifier of the bot
-     * @param shardId The shard identifier
+     * @param shardId  The shard identifier
      * @throws InterruptedException if the thread is interrupted
      */
     public static void restart(String token, String clientId, int shardId) throws InterruptedException {
@@ -161,5 +164,17 @@ public class ShardManager {
 
     public static int getGuildCount() {
         return Arrays.stream(shards).mapToInt(Shard::getGuilds).sum();
+    }
+
+    public static int getChannelCount() {
+        return Arrays.stream(shards).mapToInt(Shard::getChannels).sum();
+    }
+
+    public static int getUserCount() {
+        return Arrays.stream(shards).mapToInt(Shard::getUsers).sum();
+    }
+
+    public static int getVoiceConnectionCount() {
+        return Arrays.stream(shards).mapToInt(Shard::getVoiceConnections).sum();
     }
 }
